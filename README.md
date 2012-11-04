@@ -1,6 +1,12 @@
 # InstantGSearch
 
-This little Mac application/hack helps you instantly search Google for the currently highlighted text by hitting the hotkey **Option+G**
+This little Mac application/hack helps you instantly search Google for the currently highlighted text by hitting the hotkey **Option+G**.
+
+## How to use
+---------------
+Download and run the application: https://github.com/downloads/ryandao/InstantGSearch/InstantGSearch.zip. It's a background app so you won't see anything. Confirm whether it works by highlighting some text and hit the magical hotkey **Option+G**.
+
+It's better to run the app on startup by adding it to the Login items at System Preferences > Users and Groups > Login Items
 
 ## How it works
 ---------------
