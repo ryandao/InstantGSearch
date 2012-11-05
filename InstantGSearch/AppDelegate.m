@@ -37,8 +37,12 @@
 }
 
 - (NSString *)buildGoogleSearchURL:(NSString *)searchStr {
-  NSString *searchQuery = [searchStr stringByReplacingOccurrencesOfString:@" " withString:@"+"];
-  return [@"http://www.google.com/search?q=" stringByAppendingString:searchQuery];
+  if (! searchStr) {
+    return @"http://www.google.com";
+  } else {
+  	NSString *searchQuery = [searchStr stringByReplacingOccurrencesOfString:@" " withString:@"+"];
+  	return [@"http://www.google.com/search?q=" stringByAppendingString:searchQuery];
+  }
 }
 
 - (NSString *)getSelectedText {
@@ -53,6 +57,7 @@
   // Poll the pasteboard for whether our text has been put to the pasteboard
   // TODO: while loop vs NSTimer?
   // TODO: Use isSearchText to insure the text in Pasteboard is ours
+  NSDate *startTime = [NSDate date];
   while (true) {
     if (currentChangeCount != [pb changeCount]) {
 			while (true) {
@@ -61,6 +66,11 @@
         if (selectedText != nil) {
           return selectedText;
         }
+      }
+    } else {
+      NSDate *endTime = [NSDate date];
+      if ([endTime timeIntervalSinceDate:startTime] - 0.1 > 0) {
+        return nil;
       }
     }
   }
