@@ -40,8 +40,14 @@
   if (! searchStr) {
     return @"http://www.google.com";
   } else {
-  	NSString *searchQuery = [searchStr stringByReplacingOccurrencesOfString:@" " withString:@"+"];
-  	return [@"http://www.google.com/search?q=" stringByAppendingString:searchQuery];
+    NSString *escapedStr = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(
+      NULL,
+      (__bridge CFStringRef) searchStr,
+      NULL,
+      (CFStringRef)@"!*'();:@&=+$,/?%#[]",
+      kCFStringEncodingUTF8));
+    
+  	return [@"http://www.google.com/search?q=" stringByAppendingString:escapedStr];
   }
 }
 
