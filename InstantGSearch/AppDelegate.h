@@ -11,6 +11,4 @@
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 
-@property BOOL isSearchText;
-
 @end

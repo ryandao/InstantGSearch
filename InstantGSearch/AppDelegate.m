@@ -10,10 +10,7 @@
 
 @implementation AppDelegate
 
-@synthesize isSearchText;
-
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-  isSearchText = NO;
   
 	// Register our magical hotkey
   DDHotKeyCenter *hkCenter = [[DDHotKeyCenter alloc] init];
@@ -32,14 +29,22 @@
 
 - (void)searchGoogle:(NSEvent *) hkEvent {
   NSString *selectedText = [self getSelectedText];
-  NSString *searchURL = [self buildGoogleSearchURL:selectedText];
-  [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:searchURL]];
+  NSURL *searchURL = [self buildGoogleSearchURL:selectedText];
+
+  [[NSWorkspace sharedWorkspace] openURL:searchURL];
 }
 
-- (NSString *)buildGoogleSearchURL:(NSString *)searchStr {
-  if (! searchStr) {
-    return @"http://www.google.com";
+- (NSURL *)buildGoogleSearchURL:(NSString *)searchStr {
+  NSString *urlString;
+
+  if ([self validateUrl:searchStr]) {
+    // If the search string is already an url, open it directly
+		urlString = searchStr;
+  } else if (! searchStr) {
+    // If the string is empty or nil, open Google
+    urlString = @"http://www.google.com";
   } else {
+    // Search Google for any valid search string
     NSString *escapedStr = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(
       NULL,
       (__bridge CFStringRef) searchStr,
@@ -47,8 +52,10 @@
       (CFStringRef)@"!*'();:@&=+$,/?%#[]",
       kCFStringEncodingUTF8));
     
-  	return [@"http://www.google.com/search?q=" stringByAppendingString:escapedStr];
+  	urlString = [@"http://www.google.com/search?q=" stringByAppendingString:escapedStr];
   }
+  
+  return [NSURL URLWithString:urlString];
 }
 
 - (NSString *)getSelectedText {
@@ -60,15 +67,14 @@
   NSInteger currentChangeCount = [pb changeCount];
   [self simulateCopy];
   
-  // Poll the pasteboard for whether our text has been put to the pasteboard
+  // Poll the pasteboard and get the selected text
   // TODO: while loop vs NSTimer?
-  // TODO: Use isSearchText to insure the text in Pasteboard is ours
   NSDate *startTime = [NSDate date];
   while (true) {
     if (currentChangeCount != [pb changeCount]) {
-			while (true) {
+      while (true) {
         // Another polling since the text might not be written in Pasteboard yet
-				NSString *selectedText = [pb stringForType:NSStringPboardType];
+        NSString *selectedText = [pb stringForType:NSStringPboardType];
         if (selectedText != nil) {
           return selectedText;
         }
@@ -94,6 +100,13 @@
   CFRelease(copyCommandUp);
   CFRelease(copyCommandDown);
   CFRelease(source);
+}
+
+- (BOOL) validateUrl: (NSString *) candidate {
+  NSString *urlRegEx =
+  @"(http|https)://((\\w)*|([0-9]*)|([-|_])*)+([\\.|/]((\\w)*|([0-9]*)|([-|_])*))+";
+  NSPredicate *urlTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", urlRegEx];
+  return [urlTest evaluateWithObject:candidate];
 }
 
 @end
