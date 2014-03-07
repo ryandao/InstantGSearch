@@ -14,4 +14,4 @@ Clone the repo, open the project file with Xcode. Go to Product > Archieve > Dis
 
 ## How it works
 ---------------
-It's a very simple and dirty hack. Basically I just simulate the Copy action whenever the hotkey is pressed and grab the text from Pasteboard. I thought about getting the selected text by doing UI inspection using either Applescript, Accessibility API or whatever, but sometimes the dirty solution works the best. 
+It's a very simple and dirty hack. Basically I just simulate the Copy action whenever the hotkey is pressed and grab the text by polling Pasteboard. I thought about getting the selected text by doing UI inspection using either Applescript or Accessibility API, but sometimes the dirty solution works the best. 
