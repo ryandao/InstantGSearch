@@ -14,4 +14,4 @@ Clone the repo, open the project file with Xcode. Go to Product > Archieve > Dis
 
 ## How it works
 ---------------
-It's a very simple and dirty hack. Basically I just simulate the Copy action whenever the hotkey is pressed and grab the text by polling Pasteboard. I thought about getting the selected text by doing UI inspection using either Applescript or Accessibility API, but sometimes the dirty solution works the best. 
+The app simulates the Copy action whenever the hotkey is pressed and grab the text by polling Pasteboard. It then opens Google search for the keyword in your default browser.
